@@ -1,2683 +1,527 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OMNICRAFT – The Ultimate AI Video Studio</title>
-    <meta name="description" content="12 AI-powered media tools in one platform. Download, narrate, subtitle, research, and create videos. No watermarks. No ads." />
-
-    <style>
-        /* ============================================================
-                   RESET & BASE
-                   ============================================================ */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #06060e;
-            --bg-secondary: #0a0a18;
-            --bg-card: rgba(255, 255, 255, 0.03);
-            --border-card: rgba(255, 255, 255, 0.06);
-            --text-primary: #ffffff;
-            --text-secondary: #9999bb;
-            --text-muted: #555577;
-            --gradient-1: linear-gradient(135deg, #6c3ce0, #e040a0);
-            --gradient-2: linear-gradient(135deg, #00d4ff, #7b2ffc);
-            --gradient-3: linear-gradient(135deg, #f7971e, #ffd200);
-            --shadow-glow: 0 8px 48px rgba(108, 60, 224, 0.2);
-            --radius: 16px;
-            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            min-height: 100vh;
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #6c3ce0;
-            border-radius: 10px;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .gradient-text {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .gradient-text-2 {
-            background: var(--gradient-2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-badge {
-            display: inline-block;
-            background: rgba(108, 60, 224, 0.12);
-            color: #8b6ce0;
-            padding: 6px 18px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            border: 1px solid rgba(108, 60, 224, 0.1);
-        }
-
-        .section-title {
-            font-size: 42px;
-            font-weight: 900;
-            letter-spacing: -1px;
-            margin-bottom: 8px;
-            line-height: 1.1;
-        }
-
-        .section-subtitle {
-            color: var(--text-secondary);
-            font-size: 18px;
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-center .section-subtitle {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* ============================================================
-                   BUTTONS
-                   ============================================================ */
-        .btn-primary {
-            background: var(--gradient-1);
-            color: #fff;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition);
-            letter-spacing: 0.3px;
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(108, 60, 224, 0.35);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #00c853, #00e676);
-            color: #fff;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 200, 83, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 1.5px solid rgba(255, 255, 255, 0.15);
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .btn-sm {
-            padding: 10px 22px;
-            font-size: 14px;
-        }
-
-        /* ============================================================
-                   NAVIGATION
-                   ============================================================ */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 32px;
-            background: rgba(6, 6, 14, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .nav-brand .logo-icon {
-            font-size: 28px;
-        }
-
-        .nav-brand .logo-text {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            font-size: 13.5px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 10px;
-            transition: all var(--transition);
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-links a.active {
-            color: #fff;
-            background: rgba(108, 60, 224, 0.15);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Mobile hamburger */
-        .nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-
-        /* ============================================================
-                   PAGE SYSTEM
-                   ============================================================ */
-        .page {
-            display: none;
-            animation: fadeSlideUp 0.5s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            color: var(--text-secondary);
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all var(--transition);
-            margin-bottom: 28px;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            transform: translateX(-4px);
-        }
-
-        .page-header {
-            margin-bottom: 32px;
-        }
-
-        .page-header h1 {
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-
-        .page-header p {
-            color: var(--text-secondary);
-            font-size: 18px;
-        }
-
-        .page-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* ============================================================
-                   HOME – HERO
-                   ============================================================ */
-        .hero {
-            position: relative;
-            padding: 80px 20px 60px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .hero-bg-glow {
-            position: absolute;
-            top: -30%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(108, 60, 224, 0.08), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .hero-bg-glow-2 {
-            position: absolute;
-            bottom: -20%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(224, 64, 160, 0.06), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(108, 60, 224, 0.12);
-            color: #8b6ce0;
-            padding: 8px 22px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(108, 60, 224, 0.1);
-            animation: pulseBadge 2s infinite;
-        }
-
-        @keyframes pulseBadge {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-        }
-
-        .hero h1 {
-            font-size: 62px;
-            font-weight: 900;
-            line-height: 1.05;
-            letter-spacing: -2px;
-            margin-bottom: 16px;
-        }
-
-        .hero h1 .highlight {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero h1 .highlight-2 {
-            background: var(--gradient-2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            color: var(--text-secondary);
-            font-size: 20px;
-            max-width: 680px;
-            margin: 0 auto 36px;
-            line-height: 1.8;
-        }
-
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 48px;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            flex-wrap: wrap;
-        }
-
-        .hero-stats .stat {
-            text-align: center;
-        }
-
-        .hero-stats .stat .number {
-            font-size: 30px;
-            font-weight: 900;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-stats .stat .label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        /* ============================================================
-                   HOME – FEATURES SECTION (DETAILED)
-                   ============================================================ */
-        .features-section {
-            padding: 40px 0 60px;
-        }
-
-        .features-section .section-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            padding: 32px 24px 28px;
-            cursor: pointer;
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-            text-align: left;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-1);
-            opacity: 0;
-            transition: opacity var(--transition);
-            border-radius: var(--radius);
-        }
-
-        .feature-card:hover::before {
-            opacity: 0.05;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(108, 60, 224, 0.2);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .feature-card:active {
-            transform: scale(0.98);
-        }
-
-        .feature-card .icon-wrap {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            background: rgba(108, 60, 224, 0.08);
-            border-radius: 14px;
-            font-size: 28px;
-            margin-bottom: 14px;
-            position: relative;
-            z-index: 1;
-            transition: all var(--transition);
-        }
-
-        .feature-card:hover .icon-wrap {
-            background: rgba(108, 60, 224, 0.15);
-            transform: scale(1.05);
-        }
-
-        .feature-card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-card p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-card .feature-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-card .feature-tags span {
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .feature-card .feature-tags .tag-purple {
-            background: rgba(108, 60, 224, 0.12);
-            color: #8b6ce0;
-        }
-
-        .feature-card .feature-tags .tag-green {
-            background: rgba(0, 200, 83, 0.12);
-            color: #00e676;
-        }
-
-        .feature-card .feature-tags .tag-orange {
-            background: rgba(255, 152, 0, 0.12);
-            color: #ffab00;
-        }
-
-        .feature-card .feature-tags .tag-blue {
-            background: rgba(0, 212, 255, 0.12);
-            color: #00d4ff;
-        }
-
-        .feature-card .feature-tags .tag-red {
-            background: rgba(255, 23, 68, 0.12);
-            color: #ff1744;
-        }
-
-        .feature-card .learn-more {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: #8b6ce0;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 8px;
-            position: relative;
-            z-index: 1;
-            transition: all var(--transition);
-        }
-
-        .feature-card:hover .learn-more {
-            gap: 10px;
-            color: #a88cff;
-        }
-
-        /* ============================================================
-                   HOME – PRICING SECTION
-                   ============================================================ */
-        .pricing-section {
-            padding: 40px 0 60px;
-        }
-
-        .pricing-section .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .pricing-toggle {
-            display: inline-flex;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 100px;
-            padding: 4px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .pricing-toggle button {
-            background: none;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 100px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .pricing-toggle button.active {
-            background: rgba(108, 60, 224, 0.15);
-            color: #fff;
-        }
-
-        .pricing-toggle button:hover:not(.active) {
-            color: #fff;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .pricing-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            padding: 28px 22px 24px;
-            text-align: center;
-            transition: all var(--transition);
-            position: relative;
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .pricing-card.popular {
-            border-color: #6c3ce0;
-            background: rgba(108, 60, 224, 0.05);
-        }
-
-        .pricing-card.popular .popular-badge {
-            position: absolute;
-            top: -10px;
-            right: 16px;
-            background: var(--gradient-1);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 16px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .pricing-card .plan-name {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .pricing-card .plan-price {
-            font-size: 34px;
-            font-weight: 900;
-            margin: 8px 0 2px;
-        }
-
-        .pricing-card .plan-price small {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-secondary);
-        }
-
-        .pricing-card .plan-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 14px;
-        }
-
-        .pricing-card .plan-features {
-            list-style: none;
-            margin: 14px 0 20px;
-            text-align: left;
-        }
-
-        .pricing-card .plan-features li {
-            padding: 6px 0;
-            color: var(--text-secondary);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .pricing-card .plan-features li::before {
-            content: '✓';
-            color: #6c3ce0;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .pricing-card .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-size: 14px;
-        }
-
-        .pricing-card .btn-primary {
-            color: #fff;
-        }
-
-        .pricing-card .btn-secondary {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .pricing-card .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .pricing-extra {
-            margin-top: 32px;
-            padding: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            text-align: center;
-        }
-
-        .pricing-extra h4 {
-            font-size: 16px;
-            margin-bottom: 12px;
-        }
-
-        .pricing-extra .credit-packs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .pricing-extra .credit-packs button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all var(--transition);
-        }
-
-        .pricing-extra .credit-packs button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* ============================================================
-                   HOME – TESTIMONIALS
-                   ============================================================ */
-        .testimonials-section {
-            padding: 40px 0 60px;
-        }
-
-        .testimonials-section .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .testimonial-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            padding: 24px 22px;
-            transition: all var(--transition);
-        }
-
-        .testimonial-card:hover {
-            border-color: rgba(108, 60, 224, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .testimonial-card .stars {
-            color: #ffd700;
-            font-size: 16px;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-        }
-
-        .testimonial-card blockquote {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.7;
-            font-style: italic;
-            margin-bottom: 12px;
-        }
-
-        .testimonial-card .author {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .testimonial-card .author .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--gradient-1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .testimonial-card .author .name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .testimonial-card .author .role {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* ============================================================
-                   HOME – FAQ
-                   ============================================================ */
-        .faq-section {
-            padding: 40px 0 60px;
-        }
-
-        .faq-section .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-        }
-
-        .faq-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .faq-item:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .faq-item .question {
-            font-weight: 700;
-            font-size: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .faq-item .question .toggle {
-            font-size: 20px;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-        }
-
-        .faq-item .answer {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.7;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.3s ease;
-        }
-
-        .faq-item.open .answer {
-            max-height: 200px;
-            padding-top: 12px;
-        }
-
-        .faq-item.open .question .toggle {
-            transform: rotate(45deg);
-        }
-
-        /* ============================================================
-                   FOOTER
-                   ============================================================ */
-        .footer {
-            padding: 48px 20px 32px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            margin-top: 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .footer-brand .logo-text {
-            font-size: 20px;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .footer-brand p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 8px;
-            max-width: 300px;
-            line-height: 1.7;
-        }
-
-        .footer-col h5 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #fff;
-        }
-
-        .footer-col a {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 13px;
-            padding: 4px 0;
-            transition: color var(--transition);
-            cursor: pointer;
-        }
-
-        .footer-col a:hover {
-            color: #fff;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 32px;
-            margin-top: 32px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* ============================================================
-                   FEATURE PAGES – CARDS & FORMS
-                   ============================================================ */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius);
-            padding: 28px;
-            margin-bottom: 20px;
-            transition: border-color var(--transition);
-        }
-
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .card label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            margin-top: 14px;
-        }
-
-        .card label:first-of-type {
-            margin-top: 0;
-        }
-
-        .card input,
-        .card textarea,
-        .card select {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all var(--transition);
-        }
-
-        .card input:focus,
-        .card textarea:focus,
-        .card select:focus {
-            outline: none;
-            border-color: #6c3ce0;
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 3px rgba(108, 60, 224, 0.1);
-        }
-
-        .card textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .card select option {
-            background: #14141e;
-            color: #fff;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .form-grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-        }
-
-        .form-grid-4 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-        }
-
-        .output-box {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 16px;
-            min-height: 70px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.7;
-            margin-top: 14px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            transition: all var(--transition);
-        }
-
-        .output-box.has-content {
-            color: #eee;
-            border-color: rgba(108, 60, 224, 0.15);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 8px;
-            margin-right: 6px;
-        }
-
-        .status-badge.purple {
-            background: rgba(108, 60, 224, 0.12);
-            color: #8b6ce0;
-        }
-
-        .status-badge.green {
-            background: rgba(0, 200, 83, 0.12);
-            color: #00e676;
-        }
-
-        .status-badge.orange {
-            background: rgba(255, 152, 0, 0.12);
-            color: #ffab00;
-        }
-
-        .status-badge.blue {
-            background: rgba(0, 212, 255, 0.12);
-            color: #00d4ff;
-        }
-
-        /* ============================================================
-                   STATUS BAR
-                   ============================================================ */
-        .status-bar {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 40px;
-        }
-
-        .status-bar .status-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .status-bar .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .status-bar .status-indicator .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulse 2s infinite;
-        }
-
-        .status-bar .status-indicator .dot.online {
-            background: #00e676;
-        }
-
-        .status-bar .status-indicator .dot.offline {
-            background: #ff1744;
-            animation: none;
-        }
-
-        .status-bar .status-indicator .dot.checking {
-            background: #ffab00;
-        }
-
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        /* ============================================================
-                   TOAST
-                   ============================================================ */
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 420px;
-            width: 100%;
-        }
-
-        .toast {
-            background: rgba(16, 16, 32, 0.96);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 14px 20px;
-            color: #fff;
-            font-size: 14px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-            animation: toastIn 0.35s ease;
-            border-left: 4px solid #6c3ce0;
-        }
-
-        .toast.success {
-            border-left-color: #00e676;
-        }
-        .toast.error {
-            border-left-color: #ff1744;
-        }
-        .toast.info {
-            border-left-color: #00d4ff;
-        }
-
-        @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* ============================================================
-                   RESPONSIVE
-                   ============================================================ */
-        @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 48px;
-            }
-            .section-title {
-                font-size: 34px;
-            }
-            .features-grid {
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            }
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                padding: 12px 16px;
-            }
-            .nav-toggle {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: flex-start;
-                padding-top: 12px;
-                gap: 6px;
-            }
-            .nav-links.open {
-                display: flex;
-            }
-            .nav-links a {
-                width: 100%;
-                padding: 10px 12px;
-            }
-
-            .hero {
-                padding: 40px 16px 30px;
-            }
-            .hero h1 {
-                font-size: 34px;
-            }
-            .hero p {
-                font-size: 17px;
-            }
-            .hero-stats {
-                gap: 24px;
-            }
-            .hero-stats .stat .number {
-                font-size: 22px;
-            }
-
-            .section-title {
-                font-size: 28px;
-            }
-            .section-subtitle {
-                font-size: 15px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 14px;
-            }
-            .feature-card {
-                padding: 22px 18px 20px;
-            }
-            .feature-card .icon-wrap {
-                width: 44px;
-                height: 44px;
-                font-size: 22px;
-            }
-            .feature-card h3 {
-                font-size: 15px;
-            }
-            .feature-card p {
-                font-size: 13px;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .testimonial-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .faq-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .form-grid-3 {
-                grid-template-columns: 1fr 1fr;
-            }
-            .form-grid-4 {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .page-header h1 {
-                font-size: 28px;
-            }
-            .page-header p {
-                font-size: 15px;
-            }
-            .card {
-                padding: 20px 16px;
-            }
-
-            .toast-container {
-                right: 16px;
-                left: 16px;
-                max-width: none;
-                bottom: 16px;
-            }
-            .status-bar {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 28px;
-            }
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-            .testimonial-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-grid-3 {
-                grid-template-columns: 1fr;
-            }
-            .form-grid-4 {
-                grid-template-columns: 1fr;
-            }
-            .hero-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            .hero-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .pricing-extra .credit-packs {
-                flex-direction: column;
-                align-items: center;
-            }
-            .pricing-extra .credit-packs button {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="OMNICRAFT — one system for downloading, narrating, subtitling, clearing and generating video.">
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="no-referrer">
+<title>OMNICRAFT — One System. All Media.</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="./assets/favicon.ico" sizes="any">
+<meta name="theme-color" content="#070912">
+
+<!-- Set this to your deployed origin (used by canonical + share cards). -->
+<link rel="canonical" href="https://YOUR-DOMAIN">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OMNICRAFT">
+<meta property="og:title" content="OMNICRAFT — One System. All Media.">
+<meta property="og:description" content="Download, voice, narrate, subtitle, rewrite, clear rights, research and generate video — one console, no trackers.">
+<meta property="og:url" content="https://YOUR-DOMAIN">
+<meta property="og:image" content="https://YOUR-DOMAIN/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OMNICRAFT — one system for all media.">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OMNICRAFT — One System. All Media.">
+<meta name="twitter:description" content="One console for downloading, voicing, subtitling, researching and generating video.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN/assets/og-image.png">
+
+<link rel="stylesheet" href="./css/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OMNICRAFT",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web",
+  "description": "One system for downloading, narrating, subtitling, rewriting, clearing rights, researching and generating video.",
+  "offers": [
+    { "@type": "Offer", "name": "Free",       "price": "0",      "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Starter",    "price": "9.99",   "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Pro",        "price": "24.99",  "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Business",   "price": "59.99",  "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Enterprise", "price": "149.99", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Ultimate",   "price": "299.99", "priceCurrency": "USD" }
+  ]
+}
+</script>
 </head>
-
 <body>
 
-    <!-- ====== TOAST ====== -->
-    <div class="toast-container" id="toastContainer"></div>
+<!-- ===================== Public landing ===================== -->
+<div class="landing" id="landing">
 
-    <!-- ============================================================
-    NAVIGATION
-    ============================================================ -->
-    <nav>
-        <div class="nav-brand" onclick="navigateTo('home')">
-            <span class="logo-icon">✦</span>
-            <span class="logo-text">OMNICRAFT</span>
-        </div>
-        <button class="nav-toggle" id="navToggle" onclick="toggleNav()">☰</button>
-        <div class="nav-links" id="navLinks">
-            <a class="active" onclick="navigateTo('home')">Home</a>
-            <a onclick="navigateTo('downloader')">Download</a>
-            <a onclick="navigateTo('tts')">TTS</a>
-            <a onclick="navigateTo('narration')">Narrate</a>
-            <a onclick="navigateTo('subtitles')">Subtitles</a>
-            <a onclick="navigateTo('storyline')">Storyline</a>
-            <a onclick="navigateTo('research')">Research</a>
-            <a onclick="navigateTo('video')">AI Video</a>
-            <a onclick="navigateTo('pricing')">Pricing</a>
-        </div>
-    </nav>
-
-    <!-- ============================================================
-    HOME PAGE
-    ============================================================ -->
-    <div id="page-home" class="page active">
-
-        <!-- HERO -->
-        <section class="hero">
-            <div class="hero-bg-glow"></div>
-            <div class="hero-bg-glow-2"></div>
-            <div class="hero-content">
-                <div class="hero-badge">🚀 12 AI-Powered Tools • One Console</div>
-                <h1>
-                    The Ultimate<br />
-                    <span class="highlight">Media Studio</span>
-                    <span style="color:#fff;">for</span><br />
-                    <span class="highlight-2">Creators &amp; Teams</span>
-                </h1>
-                <p>
-                    Download, voice, narrate, subtitle, rewrite, research, and generate video —
-                    all from one stunning console. No watermarks. No ads. Just pure creation.
-                </p>
-                <div class="hero-actions">
-                    <button class="btn-primary" onclick="navigateTo('pricing')">✨ Start Free — 5 Credits</button>
-                    <button class="btn-outline" onclick="document.getElementById('featuresSection').scrollIntoView({behavior:'smooth'})">
-                        Explore Features ↓
-                    </button>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="number">12</div>
-                        <div class="label">AI Tools</div>
-                    </div>
-                    <div class="stat">
-                        <div class="number">50+</div>
-                        <div class="label">Platforms Supported</div>
-                    </div>
-                    <div class="stat">
-                        <div class="number">4K/8K</div>
-                        <div class="label">Best Quality</div>
-                    </div>
-                    <div class="stat">
-                        <div class="number">128+</div>
-                        <div class="label">Languages</div>
-                    </div>
-                    <div class="stat">
-                        <div class="number">99%</div>
-                        <div class="label">Uptime Guarantee</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FEATURES -->
-        <section id="featuresSection" class="features-section">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-badge">✦ All Features</span>
-                    <h2 class="section-title">Every Tool You Need.<br /><span class="gradient-text">One Workspace.</span></h2>
-                    <p class="section-subtitle">Click any feature to open its dedicated workspace with full controls.</p>
-                </div>
-                <div class="features-grid">
-
-                    <!-- Downloader -->
-                    <div class="feature-card" onclick="navigateTo('downloader')">
-                        <div class="icon-wrap">📥</div>
-                        <h3>Video Downloader</h3>
-                        <p>Fetch any video from YouTube, Instagram, TikTok, Facebook, Twitter, Vimeo, and more. Best quality, no watermarks.</p>
-                        <div class="feature-tags">
-                            <span class="tag-green">4K/8K</span>
-                            <span class="tag-blue">10+ Platforms</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- TTS -->
-                    <div class="feature-card" onclick="navigateTo('tts')">
-                        <div class="icon-wrap">🎙️</div>
-                        <h3>AI Text-to-Speech</h3>
-                        <p>Convert any text into natural, human-like speech with 128+ languages and dozens of voices powered by ElevenLabs.</p>
-                        <div class="feature-tags">
-                            <span class="tag-purple">ElevenLabs</span>
-                            <span class="tag-green">128+ Languages</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- Narration -->
-                    <div class="feature-card" onclick="navigateTo('narration')">
-                        <div class="icon-wrap">🎬</div>
-                        <h3>Narration System</h3>
-                        <p>Add AI voiceover to any video. Replace original audio, blend it, or sync perfectly to the video length.</p>
-                        <div class="feature-tags">
-                            <span class="tag-purple">AI Voiceover</span>
-                            <span class="tag-orange">Replace/Mix/Sync</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- Subtitles -->
-                    <div class="feature-card" onclick="navigateTo('subtitles')">
-                        <div class="icon-wrap">📝</div>
-                        <h3>Subtitle Extraction</h3>
-                        <p>Extract subtitles from any video using Whisper AI. Translate into 70+ languages and download as SRT files.</p>
-                        <div class="feature-tags">
-                            <span class="tag-green">Whisper AI</span>
-                            <span class="tag-blue">70+ Languages</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- Storyline -->
-                    <div class="feature-card" onclick="navigateTo('storyline')">
-                        <div class="icon-wrap">📖</div>
-                        <h3>Storyline &amp; Rephraser</h3>
-                        <p>Extract transcripts and let AI rewrite them into concise summaries, bullet points, clean copy, or chaptered timelines.</p>
-                        <div class="feature-tags">
-                            <span class="tag-purple">OpenAI GPT</span>
-                            <span class="tag-orange">4 Output Types</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- Research -->
-                    <div class="feature-card" onclick="navigateTo('research')">
-                        <div class="icon-wrap">🔍</div>
-                        <h3>Internet Research</h3>
-                        <p>Search the open web with no restrictions. Get a full briefing with sources, summaries, and downloadable reports.</p>
-                        <div class="feature-tags">
-                            <span class="tag-blue">Deep Web</span>
-                            <span class="tag-orange">No Restrictions</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- AI Video -->
-                    <div class="feature-card" onclick="navigateTo('video')">
-                        <div class="icon-wrap">🎨</div>
-                        <h3>AI Video Creation</h3>
-                        <p>Turn a text prompt, script, audio, or URL into a full cinematic video. 1 to 60 minutes in stunning 4K/8K quality.</p>
-                        <div class="feature-tags">
-                            <span class="tag-red">🔥 Popular</span>
-                            <span class="tag-purple">Runway Gen-3</span>
-                            <span class="tag-green">1-60 min</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                    <!-- Pricing -->
-                    <div class="feature-card" onclick="navigateTo('pricing')">
-                        <div class="icon-wrap">💳</div>
-                        <h3>Pricing &amp; Subscriptions</h3>
-                        <p>Choose from 6 flexible tiers: Free, Starter, Pro, Business, Enterprise, and Ultimate. Pay as you grow.</p>
-                        <div class="feature-tags">
-                            <span class="tag-green">6 Tiers</span>
-                            <span class="tag-blue">Stripe</span>
-                        </div>
-                        <span class="learn-more">Open Tool →</span>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- PRICING PREVIEW -->
-        <section class="pricing-section" id="pricingSection">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-badge">💰 Pricing</span>
-                    <h2 class="section-title">Choose Your <span class="gradient-text">Plan</span></h2>
-                    <p class="section-subtitle">Start free, upgrade when you need more. Credits never expire.</p>
-                    <div class="pricing-toggle">
-                        <button class="active" onclick="togglePricing('monthly')">Monthly</button>
-                        <button onclick="togglePricing('yearly')">Yearly <span style="color:#00e676;font-size:12px;">Save 20%</span></button>
-                    </div>
-                </div>
-                <div class="pricing-grid" id="pricingGrid">
-                    <!-- Free -->
-                    <div class="pricing-card">
-                        <div class="plan-name">Free</div>
-                        <div class="plan-price" data-monthly="$0" data-yearly="$0">$0</div>
-                        <div class="plan-desc">Perfect for trying things out</div>
-                        <ul class="plan-features">
-                            <li>5 credits (one-time)</li>
-                            <li>1GB storage</li>
-                            <li>1 min video limit</li>
-                            <li>Basic features</li>
-                            <li>Watermark (optional)</li>
-                        </ul>
-                        <button class="btn btn-secondary" onclick="showToast('Free plan active!','info')">Current Plan</button>
-                    </div>
-
-                    <!-- Starter -->
-                    <div class="pricing-card popular">
-                        <div class="popular-badge">Most Popular</div>
-                        <div class="plan-name">Starter</div>
-                        <div class="plan-price" data-monthly="$9.99" data-yearly="$7.99">$9.99 <small>/mo</small></div>
-                        <div class="plan-desc">Great for individual creators</div>
-                        <ul class="plan-features">
-                            <li>100 credits</li>
-                            <li>10GB storage</li>
-                            <li>10 min video</li>
-                            <li>All features</li>
-                            <li>720p export</li>
-                        </ul>
-                        <button class="btn btn-primary" onclick="handleSubscribe('starter')">Get Started</button>
-                    </div>
-
-                    <!-- Pro -->
-                    <div class="pricing-card">
-                        <div class="plan-name">Pro</div>
-                        <div class="plan-price" data-monthly="$24.99" data-yearly="$19.99">$24.99 <small>/mo</small></div>
-                        <div class="plan-desc">For serious content creators</div>
-                        <ul class="plan-features">
-                            <li>350 credits</li>
-                            <li>50GB storage</li>
-                            <li>30 min video</li>
-                            <li>All features</li>
-                            <li>1080p export</li>
-                            <li>Priority queue</li>
-                        </ul>
-                        <button class="btn btn-primary" onclick="handleSubscribe('pro')">Get Started</button>
-                    </div>
-
-                    <!-- Business -->
-                    <div class="pricing-card">
-                        <div class="plan-name">Business</div>
-                        <div class="plan-price" data-monthly="$59.99" data-yearly="$47.99">$59.99 <small>/mo</small></div>
-                        <div class="plan-desc">For teams and agencies</div>
-                        <ul class="plan-features">
-                            <li>1,200 credits</li>
-                            <li>200GB storage</li>
-                            <li>60 min video</li>
-                            <li>All features</li>
-                            <li>4K export</li>
-                            <li>API access</li>
-                        </ul>
-                        <button class="btn btn-primary" onclick="handleSubscribe('business')">Get Started</button>
-                    </div>
-                </div>
-
-                <!-- Extra Credits -->
-                <div class="pricing-extra">
-                    <h4>Need more credits? Top up anytime.</h4>
-                    <div class="credit-packs">
-                        <button onclick="handleBuyCredits(50,4.99)">50 – $4.99</button>
-                        <button onclick="handleBuyCredits(100,8.99)">100 – $8.99</button>
-                        <button onclick="handleBuyCredits(250,19.99)">250 – $19.99</button>
-                        <button onclick="handleBuyCredits(500,34.99)">500 – $34.99</button>
-                        <button onclick="handleBuyCredits(1000,59.99)">1,000 – $59.99</button>
-                        <button onclick="handleBuyCredits(5000,249.99)">5,000 – $249.99</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TESTIMONIALS -->
-        <section class="testimonials-section">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-badge">❤️ Testimonials</span>
-                    <h2 class="section-title">Loved by <span class="gradient-text">Creators</span></h2>
-                    <p class="section-subtitle">What our users are saying about OMNICRAFT.</p>
-                </div>
-                <div class="testimonial-grid">
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"OMNICRAFT has completely changed my workflow. I download, narrate, and subtitle videos in minutes instead of hours."</blockquote>
-                        <div class="author">
-                            <div class="avatar">JD</div>
-                            <div><div class="name">John Doe</div><div class="role">YouTube Creator</div></div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"The AI video creation is mind-blowing. I just type a prompt and get a professional video. Unbelievable quality."</blockquote>
-                        <div class="author">
-                            <div class="avatar">SM</div>
-                            <div><div class="name">Sarah Miller</div><div class="role">Marketing Director</div></div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"Research feature saved me hours of manual work. It finds sources, summarizes, and gives me a complete report."</blockquote>
-                        <div class="author">
-                            <div class="avatar">AR</div>
-                            <div><div class="name">Alex Rivera</div><div class="role">Content Strategist</div></div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"No watermarks, no ads, no trackers. Finally a platform that respects creators. 10/10 would recommend."</blockquote>
-                        <div class="author">
-                            <div class="avatar">LC</div>
-                            <div><div class="name">Lisa Chen</div><div class="role">Video Editor</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ -->
-        <section class="faq-section">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-badge">❓ FAQ</span>
-                    <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
-                    <p class="section-subtitle">Everything you need to know about OMNICRAFT.</p>
-                </div>
-                <div class="faq-grid">
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">What is OMNICRAFT? <span class="toggle">+</span></div>
-                        <div class="answer">OMNICRAFT is an all-in-one AI media studio with 12 powerful tools for downloading, narrating, subtitling, researching, and creating videos — all in one platform.</div>
-                    </div>
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">Is it free to use? <span class="toggle">+</span></div>
-                        <div class="answer">Yes! We offer a free tier with 5 credits, 1GB storage, and 1-minute video creation. Upgrade anytime for more features and higher limits.</div>
-                    </div>
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">What platforms can I download from? <span class="toggle">+</span></div>
-                        <div class="answer">YouTube, Instagram, TikTok, Facebook, Twitter, Vimeo, Dailymotion, Twitch, SoundCloud, Reddit, and more — all with best quality and no watermarks.</div>
-                    </div>
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">How does the AI video creation work? <span class="toggle">+</span></div>
-                        <div class="answer">Just type what you want to create. Our AI generates a script, creates scenes, adds voiceover, music, and subtitles — delivering a full video in minutes.</div>
-                    </div>
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">Do I need to install anything? <span class="toggle">+</span></div>
-                        <div class="answer">No! OMNICRAFT runs entirely in your browser. No downloads, no installations, no complex setups. Just open and create.</div>
-                    </div>
-                    <div class="faq-item" onclick="this.classList.toggle('open')">
-                        <div class="question">Is my data safe? <span class="toggle">+</span></div>
-                        <div class="answer">Absolutely. We use JWT authentication, 2FA, role-based access, and enterprise-grade encryption. No ads, no trackers, no third-party sharing.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- STATUS BAR -->
-        <div class="container">
-            <div class="status-bar">
-                <span class="status-label">⚡ System Status</span>
-                <span class="status-indicator">
-                    <span class="dot checking" id="statusDot"></span>
-                    <span id="statusText">Checking...</span>
-                    <span style="font-weight:400;color:var(--text-muted);font-size:12px;margin-left:8px;" id="apiUrlDisplay">
-                        https://omnicraft-api.onrender.com
-                    </span>
-                </span>
-            </div>
-        </div>
-
+  <nav class="lp-nav">
+    <span class="lp-nav__brand">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="21" height="21" rx="4" stroke="#6c7bff" stroke-width="1.5"/>
+        <path d="M7 16.5V7.5l5 5 5-5v9" stroke="#e8ecfa" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      OMNI<em>CRAFT</em>
+    </span>
+    <div class="lp-nav__links">
+      <a href="#lp-features">Features</a>
+      <a href="#lp-pricing">Pricing</a>
+      <a href="#lp-faq">FAQ</a>
     </div>
-    <!-- END HOME PAGE -->
+    <span class="lp-nav__spacer"></span>
+    <button class="btn btn--ghost btn--sm" data-open="signin">Sign in</button>
+    <button class="btn btn--sm" data-open="create">Get started</button>
+  </nav>
 
-    <!-- ============================================================
-    FEATURE PAGES (All 8)
-    ============================================================ -->
+  <div class="lp">
 
-    <!-- DOWNLOADER -->
-    <div id="page-downloader" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>📥 Video Downloader</h1>
-                <p>Paste any video link — get the best quality, no watermarks.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Enter Video URL</h3>
-                    <input type="text" id="downloadUrl" placeholder="https://www.youtube.com/watch?v=..." />
-                    <div class="form-row">
-                        <div>
-                            <label>Quality</label>
-                            <select id="downloadQuality">
-                                <option value="best">Best (4K/8K)</option>
-                                <option value="1080p">1080p</option>
-                                <option value="720p">720p</option>
-                                <option value="480p">480p</option>
-                                <option value="audio">Audio Only (MP3)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Format</label>
-                            <select id="downloadFormat">
-                                <option value="mp4">MP4 (Video)</option>
-                                <option value="mp3">MP3 (Audio)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="handleDownload()" style="width:100%;margin-top:10px;">⬇ Download</button>
-                    <div class="output-box" id="downloadOutput">Ready to download...</div>
-                </div>
-                <div class="card">
-                    <h3>Supported Platforms</h3>
-                    <p>YouTube · Instagram · TikTok · Facebook · Twitter · Vimeo · Dailymotion · Twitch · SoundCloud · Reddit</p>
-                    <span class="status-badge green">No watermarks</span>
-                    <span class="status-badge purple">yt-dlp engine</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Hero -->
+    <header class="lp-hero">
+      <p class="lp-eyebrow">One system. All media.</p>
+      <h1>Every media tool you reach for, on <em>one</em> console.</h1>
+      <p class="lp-hero__sub">Download, voice, narrate, subtitle, rewrite, clear rights, research and
+        generate video — driven by plain-language commands or hands-on controls. Runs on your own
+        infrastructure, with no trackers and no ads.</p>
+      <div class="lp-cta-row">
+        <button class="btn btn--lg" data-open="create">Start free — 5 credits</button>
+        <a class="btn btn--ghost btn--lg" href="#lp-pricing">See pricing</a>
+      </div>
+      <p class="lp-note">No card required · Credits never expire</p>
 
-    <!-- TTS -->
-    <div id="page-tts" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>🎙️ AI Text-to-Speech</h1>
-                <p>Convert any text to natural AI voice — ElevenLabs powered.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Enter Text</h3>
-                    <textarea id="ttsText" placeholder="Type or paste your text here..."></textarea>
-                    <div class="form-row">
-                        <div>
-                            <label>Voice</label>
-                            <select id="ttsVoice">
-                                <option value="james">James (Male, Deep)</option>
-                                <option value="sarah">Sarah (Female, Warm)</option>
-                                <option value="michael">Michael (Male, Professional)</option>
-                                <option value="emma">Emma (Female, Bright)</option>
-                                <option value="david">David (Male, Narrator)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Language</label>
-                            <select id="ttsLanguage">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="it">Italian</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="hi">Hindi</option>
-                                <option value="ja">Japanese</option>
-                                <option value="ko">Korean</option>
-                                <option value="zh">Chinese</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="handleTTS()" style="width:100%;">🎧 Generate Audio</button>
-                    <div class="output-box" id="ttsOutput">Ready to generate...</div>
-                </div>
-                <div class="card">
-                    <h3>Voice Engine</h3>
-                    <p>Powered by ElevenLabs · 128+ languages · Emotional & human-like</p>
-                    <span class="status-badge green">10,000 chars free</span>
-                    <span class="status-badge blue">Ultra-realistic</span>
-                </div>
-            </div>
+      <!-- Console mock -->
+      <div class="lp-mock" aria-hidden="true">
+        <div class="lp-mock__bar">
+          <span class="lp-mock__dot"></span><span class="lp-mock__dot"></span><span class="lp-mock__dot"></span>
+          <span class="lp-mock__title">OMNICRAFT — command centre</span>
         </div>
-    </div>
+        <div class="lp-mock__body">
+          <div class="lp-mock__rail">
+            <div class="lp-mock__chan on"><span class="n">01</span> Downloader <span class="lp-mock__led"></span></div>
+            <div class="lp-mock__chan"><span class="n">02</span> Text to speech <span class="lp-mock__led"></span></div>
+            <div class="lp-mock__chan"><span class="n">04</span> Subtitles <span class="lp-mock__led"></span></div>
+            <div class="lp-mock__chan"><span class="n">07</span> Autopilot <span class="lp-mock__led"></span></div>
+            <div class="lp-mock__chan"><span class="n">12</span> AI video <span class="lp-mock__led"></span></div>
+          </div>
+          <div class="lp-mock__stage">
+            <div class="lp-mock__row w2"></div>
+            <div class="lp-mock__row w1"></div>
+            <div class="lp-mock__row w3"></div>
+            <div class="lp-mock__prog"><i></i></div>
+          </div>
+          <div class="lp-mock__deck">
+            <span class="dot"></span>
+            <span class="txt">Pull this talk, transcribe it, and give me the key points as bullets…</span>
+          </div>
+        </div>
+      </div>
+    </header>
 
-    <!-- NARRATION -->
-    <div id="page-narration" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>🎬 Narration System</h1>
-                <p>Add AI voiceover to any video — replace, mix, or sync.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Video Input</h3>
-                    <input type="text" id="narrationUrl" placeholder="Video URL or upload file" />
-                    <label>Narration Script</label>
-                    <textarea id="narrationScript" placeholder="Type your narration script here..."></textarea>
-                    <div class="form-row">
-                        <div>
-                            <label>Voice</label>
-                            <select id="narrationVoice">
-                                <option value="james">James (Deep)</option>
-                                <option value="sarah">Sarah (Warm)</option>
-                                <option value="michael">Michael (Professional)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Mode</label>
-                            <select id="narrationMode">
-                                <option value="replace">Replace Original Audio</option>
-                                <option value="mix">Mix with Original</option>
-                                <option value="sync">Sync to Video Length</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="handleNarration()" style="width:100%;">🎬 Generate Narrated Video</button>
-                    <div class="output-box" id="narrationOutput">Ready to narrate...</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <hr class="lp-divider">
 
-    <!-- SUBTITLES -->
-    <div id="page-subtitles" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>📝 Subtitle Extraction</h1>
-                <p>Extract, translate, and download subtitles — Whisper powered.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Video Input</h3>
-                    <input type="text" id="subtitleUrl" placeholder="Video URL or upload file" />
-                    <div class="form-row">
-                        <div>
-                            <label>Language</label>
-                            <select id="subtitleLanguage">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="it">Italian</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="hi">Hindi</option>
-                                <option value="ja">Japanese</option>
-                                <option value="ko">Korean</option>
-                                <option value="zh">Chinese</option>
-                                <option value="ar">Arabic</option>
-                                <option value="ru">Russian</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Action</label>
-                            <select id="subtitleAction">
-                                <option value="extract">Extract Subtitles</option>
-                                <option value="translate">Extract + Translate</option>
-                                <option value="generate">Generate from Audio</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="handleSubtitles()" style="width:100%;">📄 Generate Subtitles</button>
-                    <div class="output-box" id="subtitleOutput">Ready to extract...</div>
-                </div>
-                <div class="card">
-                    <h3>Output</h3>
-                    <p>SRT file format · Time-synced · 70+ languages supported</p>
-                    <span class="status-badge green">Powered by Whisper</span>
-                    <span class="status-badge blue">99% accuracy</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Platforms -->
+    <section class="lp-section">
+      <div class="lp-section__head">
+        <h2>Pull from the platforms you already use</h2>
+        <p>Best available quality, no watermarks. Only fetch what you own or hold a licence for.</p>
+      </div>
+      <div class="lp-chips">
+        <span class="lp-chip">YouTube</span><span class="lp-chip">Instagram</span>
+        <span class="lp-chip">TikTok</span><span class="lp-chip">Facebook</span>
+        <span class="lp-chip">X</span><span class="lp-chip">Vimeo</span>
+        <span class="lp-chip">Dailymotion</span><span class="lp-chip">Twitch</span>
+        <span class="lp-chip">SoundCloud</span><span class="lp-chip">Reddit</span>
+      </div>
+    </section>
 
-    <!-- STORYLINE -->
-    <div id="page-storyline" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>📖 Storyline &amp; Rephraser</h1>
-                <p>Extract transcript and AI rephrase into summaries &amp; bullet points.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Video Input</h3>
-                    <input type="text" id="storylineUrl" placeholder="Video URL or upload file" />
-                    <div class="form-row">
-                        <div>
-                            <label>Output Type</label>
-                            <select id="storylineOutput">
-                                <option value="summary">Concise Summary</option>
-                                <option value="bullets">Bullet Points</option>
-                                <option value="clean">Clean Readable Text</option>
-                                <option value="chapters">Chapters / Timeline</option>
-                            </select>
-                        </div>
-                        <div style="display:flex;align-items:flex-end;">
-                            <button class="btn-primary" onclick="handleStoryline()" style="width:100%;">📖 Generate</button>
-                        </div>
-                    </div>
-                    <div class="output-box" id="storylineOutput">Ready to generate...</div>
-                    <button class="btn-secondary" onclick="downloadTxt('storylineOutput','storyline')" style="margin-top:12px;">📥 Download TXT</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Features -->
+    <section class="lp-section" id="lp-features">
+      <div class="lp-section__head">
+        <h2>Twelve channels, one workspace</h2>
+        <p>Each module is a numbered channel on the console. Use one, or chain them together.</p>
+      </div>
+      <div class="lp-grid">
+        <div class="lp-feat"><div class="lp-feat__n">CH 01</div><div class="lp-feat__t">Downloader</div><div class="lp-feat__d">Fetch source media from ten platforms at the best quality available.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 02</div><div class="lp-feat__t">Text to speech</div><div class="lp-feat__d">Turn a script into a finished voice track in dozens of voices and languages.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 03</div><div class="lp-feat__t">Narration</div><div class="lp-feat__d">Lay a voice over a video — replace, blend, or duck the original audio.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 04</div><div class="lp-feat__t">Subtitles</div><div class="lp-feat__d">Transcribe speech into timed lines, then translate into 70+ languages.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 05</div><div class="lp-feat__t">Storyline</div><div class="lp-feat__d">Rewrite any transcript into a summary, bullets, clean copy or chapters.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 06</div><div class="lp-feat__t">Music rights</div><div class="lp-feat__d">Screen audio for third-party recordings and clear what you don't own.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 07</div><div class="lp-feat__t">Autopilot</div><div class="lp-feat__d">Describe an outcome; it plans the steps, shows the cost, and runs them.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 08</div><div class="lp-feat__t">Research</div><div class="lp-feat__d">Search the open web and get a briefing with every claim traced to a source.</div></div>
+        <div class="lp-feat"><div class="lp-feat__n">CH 12</div><div class="lp-feat__t">AI video</div><div class="lp-feat__d">A brief or a script becomes a narrated, captioned, graded video.</div></div>
+      </div>
+    </section>
 
-    <!-- RESEARCH -->
-    <div id="page-research" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>🔍 Internet Research</h1>
-                <p>Search everything, no restrictions, deep research with sources.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Research Query</h3>
-                    <textarea id="researchQuery" placeholder="What do you want to research? (e.g., 'Find top 10 AI tools for video editing in 2026')"></textarea>
-                    <div class="form-row">
-                        <div>
-                            <label>Depth</label>
-                            <select id="researchDepth">
-                                <option value="basic">Basic (5 results)</option>
-                                <option value="deep">Deep (20 results)</option>
-                                <option value="exhaustive">Exhaustive (50+ results)</option>
-                            </select>
-                        </div>
-                        <div style="display:flex;align-items:flex-end;">
-                            <button class="btn-primary" onclick="handleResearch()" style="width:100%;">🔍 Start Research</button>
-                        </div>
-                    </div>
-                    <div class="output-box" id="researchOutput">Ready to research...</div>
-                    <button class="btn-secondary" onclick="downloadTxt('researchOutput','research')" style="margin-top:12px;">📥 Download Report</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Flow -->
+    <section class="lp-section">
+      <div class="lp-section__head">
+        <h2>Or just tell it what you want</h2>
+        <p>The talkback bar turns one instruction into a routed, priced plan across the modules.</p>
+      </div>
+      <div class="lp-steps">
+        <div class="lp-step"><div class="lp-step__n">1</div><div class="lp-step__t">Type an instruction</div><div class="lp-step__d">Plain language, with links and the format you want back.</div></div>
+        <div class="lp-step"><div class="lp-step__n">2</div><div class="lp-step__t">Review the plan</div><div class="lp-step__d">See each step and the exact credit cost before anything runs.</div></div>
+        <div class="lp-step"><div class="lp-step__n">3</div><div class="lp-step__t">Watch it run</div><div class="lp-step__d">Live progress over the socket. Failed steps refund automatically.</div></div>
+      </div>
+    </section>
 
-    <!-- AI VIDEO -->
-    <div id="page-video" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>🎨 AI Video Creation</h1>
-                <p>Text → Video · Script → Video · Audio → Video · 1-60 minutes.</p>
-            </div>
-            <div class="page-content">
-                <div class="card">
-                    <h3>Create Your Video</h3>
-                    <div class="form-row">
-                        <div>
-                            <label>Input Type</label>
-                            <select id="videoInputType">
-                                <option value="text">Text Prompt</option>
-                                <option value="script">Script</option>
-                                <option value="audio">Audio File</option>
-                                <option value="url">URL / Article</option>
-                                <option value="images">Images</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>AI Model</label>
-                            <select id="videoModel">
-                                <option value="runway">Runway Gen-3 (Cinematic)</option>
-                                <option value="stable">Stable Video Diffusion (Free)</option>
-                                <option value="stock">Stock Footage (Fast)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <label>Content</label>
-                    <textarea id="videoPrompt" placeholder="Describe what you want to create..." style="min-height:90px;"></textarea>
-                    <div class="form-grid-4">
-                        <div>
-                            <label>Length</label>
-                            <select id="videoLength">
-                                <option value="1">1 min</option>
-                                <option value="3">3 min</option>
-                                <option value="5">5 min</option>
-                                <option value="10">10 min</option>
-                                <option value="20">20 min</option>
-                                <option value="30">30 min</option>
-                                <option value="60">60 min</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Style</label>
-                            <select id="videoStyle">
-                                <option value="cinematic">Cinematic</option>
-                                <option value="educational">Educational</option>
-                                <option value="vlog">Vlog</option>
-                                <option value="animated">Animated</option>
-                                <option value="documentary">Documentary</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Resolution</label>
-                            <select id="videoResolution">
-                                <option value="720">720p</option>
-                                <option value="1080">1080p</option>
-                                <option value="4k">4K</option>
-                                <option value="8k">8K</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Music</label>
-                            <select id="videoMusic">
-                                <option value="epic">Epic</option>
-                                <option value="calm">Calm</option>
-                                <option value="corporate">Corporate</option>
-                                <option value="ambient">Ambient</option>
-                                <option value="upbeat">Upbeat</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-top:10px;">
-                        <label>Voice</label>
-                        <select id="videoVoice" style="width:100%;">
-                            <option value="james">James (Male, Deep)</option>
-                            <option value="sarah">Sarah (Female, Warm)</option>
-                            <option value="michael">Michael (Male, Professional)</option>
-                            <option value="emma">Emma (Female, Bright)</option>
-                        </select>
-                    </div>
-                    <button class="btn-primary" onclick="handleVideoCreate()" style="width:100%;margin-top:14px;">🎬 Generate Video</button>
-                    <div class="output-box" id="videoOutput">Ready to generate (1-60 minutes)...</div>
-                    <span class="status-badge orange">Credits: 15-600</span>
-                    <span class="status-badge purple">Balance: 5 credits (Free)</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <hr class="lp-divider">
 
-    <!-- PRICING PAGE (Full) -->
-    <div id="page-pricing" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="navigateTo('home')">← Back to Home</button>
-            <div class="page-header">
-                <h1>💳 Choose Your <span class="gradient-text">Plan</span></h1>
-                <p>Start free, upgrade when you need more. Credits never expire.</p>
-            </div>
-            <div class="pricing-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
-                <div class="pricing-card">
-                    <div class="plan-name">Free</div>
-                    <div class="plan-price">$0</div>
-                    <ul class="plan-features">
-                        <li>5 credits (one-time)</li>
-                        <li>1GB storage</li>
-                        <li>1 min video limit</li>
-                        <li>Basic features</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="showToast('Free plan active!','info')">Current Plan</button>
-                </div>
-                <div class="pricing-card popular">
-                    <div class="popular-badge">Most Popular</div>
-                    <div class="plan-name">Starter</div>
-                    <div class="plan-price">$9.99 <small>/mo</small></div>
-                    <ul class="plan-features">
-                        <li>100 credits</li>
-                        <li>10GB storage</li>
-                        <li>10 min video</li>
-                        <li>All features</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="handleSubscribe('starter')">Get Started</button>
-                </div>
-                <div class="pricing-card">
-                    <div class="plan-name">Pro</div>
-                    <div class="plan-price">$24.99 <small>/mo</small></div>
-                    <ul class="plan-features">
-                        <li>350 credits</li>
-                        <li>50GB storage</li>
-                        <li>30 min video</li>
-                        <li>Priority queue</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="handleSubscribe('pro')">Get Started</button>
-                </div>
-                <div class="pricing-card">
-                    <div class="plan-name">Business</div>
-                    <div class="plan-price">$59.99 <small>/mo</small></div>
-                    <ul class="plan-features">
-                        <li>1,200 credits</li>
-                        <li>200GB storage</li>
-                        <li>60 min video</li>
-                        <li>API access</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="handleSubscribe('business')">Get Started</button>
-                </div>
-                <div class="pricing-card">
-                    <div class="plan-name">Enterprise</div>
-                    <div class="plan-price">$149.99 <small>/mo</small></div>
-                    <ul class="plan-features">
-                        <li>4,000 credits</li>
-                        <li>1TB storage</li>
-                        <li>Unlimited video</li>
-                        <li>White-label</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="handleSubscribe('enterprise')">Contact Sales</button>
-                </div>
-                <div class="pricing-card">
-                    <div class="plan-name">Ultimate</div>
-                    <div class="plan-price">$299.99 <small>/mo</small></div>
-                    <ul class="plan-features">
-                        <li>12,000 credits</li>
-                        <li>5TB storage</li>
-                        <li>Unlimited video</li>
-                        <li>Custom AI models</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="handleSubscribe('ultimate')">Contact Sales</button>
-                </div>
-            </div>
-            <div class="pricing-extra" style="margin-top:32px;">
-                <h4>Extra Credits (One-time Purchase)</h4>
-                <div class="credit-packs">
-                    <button onclick="handleBuyCredits(50,4.99)">50 – $4.99</button>
-                    <button onclick="handleBuyCredits(100,8.99)">100 – $8.99</button>
-                    <button onclick="handleBuyCredits(250,19.99)">250 – $19.99</button>
-                    <button onclick="handleBuyCredits(500,34.99)">500 – $34.99</button>
-                    <button onclick="handleBuyCredits(1000,59.99)">1,000 – $59.99</button>
-                    <button onclick="handleBuyCredits(5000,249.99)">5,000 – $249.99</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Pricing -->
+    <section class="lp-section" id="lp-pricing">
+      <div class="lp-section__head">
+        <h2>Simple credits. Six tiers.</h2>
+        <p>Every action costs a fixed number of credits. Your plan refills monthly; top-up packs never expire.</p>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label on" id="lpLblM">Monthly</span>
+        <button class="toggle" id="lpToggle" aria-pressed="false" aria-label="Billing cycle"><span class="toggle__knob"></span></button>
+        <span class="toggle-label" id="lpLblY">Yearly</span>
+        <span class="save-chip">Save 20%</span>
+      </div>
+      <div class="plans" id="lpPlans"></div>
 
-    <!-- ============================================================
-    FOOTER
-    ============================================================ -->
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <div class="logo-text">✦ OMNICRAFT</div>
-                <p>The ultimate AI media studio for creators, teams, and businesses. 12 powerful tools in one console.</p>
-            </div>
-            <div class="footer-col">
-                <h5>Platform</h5>
-                <a onclick="navigateTo('home')">Home</a>
-                <a onclick="navigateTo('pricing')">Pricing</a>
-                <a onclick="navigateTo('downloader')">Downloader</a>
-                <a onclick="navigateTo('tts')">TTS</a>
-            </div>
-            <div class="footer-col">
-                <h5>Features</h5>
-                <a onclick="navigateTo('narration')">Narration</a>
-                <a onclick="navigateTo('subtitles')">Subtitles</a>
-                <a onclick="navigateTo('storyline')">Storyline</a>
-                <a onclick="navigateTo('research')">Research</a>
-                <a onclick="navigateTo('video')">AI Video</a>
-            </div>
-            <div class="footer-col">
-                <h5>Support</h5>
-                <a href="#" onclick="showToast('📧 support@omnicraft.com','info')">Email Us</a>
-                <a href="#" onclick="showToast('📱 Status: Online ✅','success')">System Status</a>
-                <a href="#" onclick="showToast('📚 Documentation coming soon!','info')">Documentation</a>
-                <a href="#" onclick="showToast('💬 Live chat coming soon!','info')">Live Chat</a>
-            </div>
+      <div class="lp-section__head" style="margin-top:44px">
+        <h2 style="font-size:22px">Need more? Top up any time.</h2>
+        <p>One-time credit packs. They stack on your plan allowance and never expire.</p>
+      </div>
+      <div class="packs" id="lpPacks"></div>
+      <p class="lp-pricing-note">Downloads from 1 credit · Voiceover 2/min · Research from 5 · AI video from 15.
+        Full cost table is inside the app.</p>
+    </section>
+
+    <hr class="lp-divider">
+
+    <!-- FAQ -->
+    <section class="lp-section" id="lp-faq">
+      <div class="lp-section__head"><h2>Questions</h2></div>
+      <div class="lp-faq">
+        <div class="lp-q"><button class="lp-q__head">What is a credit?</button><div class="lp-q__body"><p>A single unit of work. A short download is one credit; a minute of voiceover is two; a minute of AI video starts at fifteen. Every action shows its cost before you run it.</p></div></div>
+        <div class="lp-q"><button class="lp-q__head">Do credits expire?</button><div class="lp-q__body"><p>Plan credits refill each month. Top-up packs you buy separately never expire and stack on top of your monthly allowance.</p></div></div>
+        <div class="lp-q"><button class="lp-q__head">Do I need my own API keys?</button><div class="lp-q__body"><p>No. The platform ships with sensible fallbacks for every module and works out of the box. Adding provider keys unlocks higher-quality voices, visuals and search — the console shows exactly which key each module wants.</p></div></div>
+        <div class="lp-q"><button class="lp-q__head">Is my data used for anything?</button><div class="lp-q__body"><p>No advertising, no trackers, no third-party scripts. Intermediate files are swept on a schedule; anything you keep stays in your library until you delete it.</p></div></div>
+        <div class="lp-q"><button class="lp-q__head">Can I cancel any time?</button><div class="lp-q__body"><p>Yes. Cancelling from the billing portal keeps your plan active until the end of the current period, then stops. No lock-in.</p></div></div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="lp-section">
+      <div class="lp-band">
+        <h2>Start with five free credits</h2>
+        <p>No card, no trial timer. Create an account and the console is yours.</p>
+        <button class="btn btn--lg" data-open="create">Get started</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="lp-footer">
+      <div class="lp-footer__grid">
+        <div>
+          <div class="lp-footer__brand">OMNI<em>CRAFT</em></div>
+          <p class="lp-footer__tag">One system. All media. Infinite possibilities.</p>
         </div>
-        <div class="footer-bottom">
-            <p>© 2026 OMNICRAFT. All rights reserved. Built with ❤️</p>
+        <div class="lp-footer__col">
+          <h4>Product</h4>
+          <a href="#lp-features">Features</a>
+          <a href="#lp-pricing">Pricing</a>
+          <a href="#" data-open="signin">Sign in</a>
         </div>
+        <div class="lp-footer__col">
+          <h4>Use responsibly</h4>
+          <a href="#lp-faq">FAQ</a>
+          <a href="#" data-open="create">Create account</a>
+        </div>
+      </div>
+      <div class="lp-footer__note">
+        <span>Only process media you own or are licensed to use. Rights tools clear material you don't hold — they don't disguise it.</span>
+        <span>&copy; OMNICRAFT</span>
+      </div>
     </footer>
 
-    <!-- ============================================================
-    JAVASCRIPT
-    ============================================================ -->
-    <script>
-        // ============================================================
-        // CONFIGURATION
-        // ============================================================
-        const CONFIG = {
-            API_URL: 'https://omnicraft-api.onrender.com',
-        };
+  </div>
+</div>
 
-        let backendOnline = false;
 
-        // ============================================================
-        // NAVIGATION
-        // ============================================================
-        function navigateTo(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById('page-' + pageId);
-            if (target) target.classList.add('active');
+<!-- ===================== Sign in gate ===================== -->
+<div class="gate" id="gate">
+  <div class="gate__panel">
+    <div class="gate__brand">OMNI<em>CRAFT</em></div>
+    <p class="gate__tag">One system. All media. Infinite possibilities.</p>
 
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            document.querySelectorAll('.nav-links a').forEach(a => {
-                const onclick = a.getAttribute('onclick');
-                if (onclick && onclick.includes("'" + pageId + "'")) {
-                    a.classList.add('active');
-                }
-                if (pageId === 'home' && a.textContent.trim() === 'Home') {
-                    a.classList.add('active');
-                }
-            });
+    <div class="gate__tabs" role="tablist">
+      <button class="gate__tab" id="tabSignIn" role="tab" aria-selected="true">Sign in</button>
+      <button class="gate__tab" id="tabCreate" role="tab" aria-selected="false">Create account</button>
+    </div>
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    <form id="formSignIn" autocomplete="on">
+      <div class="field">
+        <label class="field__label" for="loginId">Email or username</label>
+        <input class="input" id="loginId" name="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label class="field__label" for="loginPass">Password</label>
+        <input class="input" id="loginPass" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="field hidden" id="totpField">
+        <label class="field__label" for="loginTotp">Authenticator code</label>
+        <input class="input mono" id="loginTotp" inputmode="numeric" maxlength="6" placeholder="000000">
+        <p class="field__note">Open your authenticator app and enter the current 6-digit code.</p>
+      </div>
+      <button class="btn btn--block" type="submit">Sign in</button>
+    </form>
 
-            // Close mobile nav
-            document.getElementById('navLinks').classList.remove('open');
-        }
+    <form id="formCreate" class="hidden" autocomplete="on">
+      <div class="field">
+        <label class="field__label" for="regEmail">Email</label>
+        <input class="input" id="regEmail" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label class="field__label" for="regUser">Username</label>
+        <input class="input" id="regUser" autocomplete="username" pattern="[A-Za-z0-9_.-]{3,32}" required>
+        <p class="field__note">3–32 characters. Letters, numbers, dot, dash, underscore.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="regPass">Password</label>
+        <input class="input" id="regPass" type="password" autocomplete="new-password" minlength="10" required>
+        <p class="field__note">At least 10 characters, with a number or symbol.</p>
+      </div>
+      <button class="btn btn--block" type="submit">Create account</button>
+      <p class="field__note mt">New accounts start with 5 credits on the Free tier.</p>
+    </form>
 
-        function toggleNav() {
-            document.getElementById('navLinks').classList.toggle('open');
-        }
+    <button class="gate__back" id="gateBack" type="button">← Back to home</button>
+  </div>
+</div>
 
-        // ============================================================
-        // TOAST
-        // ============================================================
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + type;
-            toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px) scale(0.97)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 350);
-            }, 4500);
-        }
+<!-- ===================== Console ===================== -->
+<div class="shell" id="shell" hidden>
 
-        // ============================================================
-        // BACKEND STATUS
-        // ============================================================
-        async function checkBackendStatus() {
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
+  <header class="brand">
+    <svg class="brand__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="21" height="21" rx="4" stroke="#6c7bff" stroke-width="1.5"/>
+      <path d="M7 16.5V7.5l5 5 5-5v9" stroke="#e8ecfa" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="brand__name">OMNI<em>CRAFT</em></span>
+  </header>
 
-            try {
-                const response = await fetch(CONFIG.API_URL + '/health', {
-                    signal: AbortSignal.timeout(5000)
-                });
-                if (response.ok) {
-                    backendOnline = true;
-                    dot.className = 'dot online';
-                    text.textContent = 'Online ✅';
-                    text.style.color = '#00e676';
-                } else {
-                    backendOnline = false;
-                    dot.className = 'dot offline';
-                    text.textContent = 'Offline ⚠️';
-                    text.style.color = '#ffab00';
-                }
-            } catch (e) {
-                backendOnline = false;
-                dot.className = 'dot offline';
-                text.textContent = 'Offline ❌';
-                text.style.color = '#ff1744';
-            }
-        }
+  <div class="topbar">
+    <div>
+      <div class="topbar__title" id="barTitle">Command centre</div>
+      <div class="topbar__sub" id="barSub">Every module in one surface</div>
+    </div>
+    <div class="topbar__spacer"></div>
 
-        // ============================================================
-        // PRICING TOGGLE
-        // ============================================================
-        let pricingMode = 'monthly';
+    <div class="meter" title="Credit balance">
+      <span class="meter__label">Credits</span>
+      <div class="meter__ladder" id="meterLadder"></div>
+      <span class="meter__value" id="meterValue">0</span>
+    </div>
+    <span class="tier-chip" id="tierChip">Free</span>
+    <button class="btn btn--ghost btn--sm" id="btnAccount">Account</button>
+    <button class="btn btn--quiet btn--sm" id="btnSignOut">Sign out</button>
+  </div>
 
-        function togglePricing(mode) {
-            pricingMode = mode;
-            document.querySelectorAll('.pricing-toggle button').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.pricing-toggle button').forEach(b => {
-                if (b.textContent.toLowerCase().includes(mode)) b.classList.add('active');
-            });
+  <nav class="rail" id="rail" aria-label="Modules"></nav>
 
-            document.querySelectorAll('.plan-price').forEach(el => {
-                const monthly = el.getAttribute('data-monthly');
-                const yearly = el.getAttribute('data-yearly');
-                if (mode === 'monthly' && monthly) {
-                    el.innerHTML = monthly + ' <small>/mo</small>';
-                } else if (mode === 'yearly' && yearly) {
-                    el.innerHTML = yearly + ' <small>/mo</small>';
-                }
-            });
-        }
+  <main class="stage" id="stage">
 
-        // ============================================================
-        // API HELPER
-        // ============================================================
-        async function callApi(endpoint, data) {
-            if (!backendOnline) {
-                throw new Error('Backend is offline. Deploy your backend on Render first.');
-            }
-            const response = await fetch(CONFIG.API_URL + endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) {
-                const error = await response.json().catch(() => ({ detail: 'Request failed' }));
-                throw new Error(error.detail || 'API request failed');
-            }
-            return response.json();
-        }
+    <!-- ---------- Overview ---------- -->
+    <section class="view" id="view-overview">
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 00 · Overview</p>
+        <h1 class="view__title">Command centre</h1>
+        <p class="view__lede">Type an instruction into the talkback bar at the bottom and OMNICRAFT
+          routes it across the modules. Or pick a channel on the left and drive it yourself.</p>
+      </div>
+      <div class="grid cols-4 mb" id="overviewStats"></div>
+      <div class="card">
+        <h2 class="card__title">Module status</h2>
+        <p class="card__hint">Green means the module has everything it needs. Amber means a key or binary is missing.</p>
+        <div id="moduleStatus"></div>
+      </div>
+      <div class="card">
+        <h2 class="card__title">Recent jobs</h2>
+        <p class="card__hint">Live progress arrives over the socket. Nothing here polls.</p>
+        <div id="overviewJobs"></div>
+      </div>
+    </section>
 
-        // ============================================================
-        // FEATURE HANDLERS
-        // ============================================================
-        async function handleDownload() {
-            const url = document.getElementById('downloadUrl').value;
-            const quality = document.getElementById('downloadQuality').value;
-            const format = document.getElementById('downloadFormat').value;
-            const output = document.getElementById('downloadOutput');
-            if (!url) { showToast('Please paste a video URL!', 'error'); return; }
-            output.textContent = '⏳ Downloading...';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/download', { url, quality, format });
-                output.textContent = '✅ Download complete!\n\n📁 File: ' + result.filename + '\n📊 Size: ' + result
-                .size + '\n🔗 Download: ' + result.download_url;
-                output.className = 'output-box has-content';
-                showToast('✅ Download complete!', 'success');
-                if (result.download_url) window.open(result.download_url, '_blank');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Download failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 01 Download ---------- -->
+    <section class="view" id="view-download" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 01 · Retrieval</p>
+        <h1 class="view__title">Video downloader</h1>
+        <p class="view__lede">Pull source media from supported platforms at the best available quality.
+          Only fetch material you own or hold a licence for.</p>
+      </div>
+      <div id="downloadPanel"></div>
+    </section>
 
-        async function handleTTS() {
-            const text = document.getElementById('ttsText').value;
-            const voice = document.getElementById('ttsVoice').value;
-            const language = document.getElementById('ttsLanguage').value;
-            const output = document.getElementById('ttsOutput');
-            if (!text) { showToast('Please enter some text!', 'error'); return; }
-            output.textContent = '⏳ Generating audio...';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/tts/generate', { text, voice, language });
-                output.textContent = '✅ Audio generated!\n\n🎧 Duration: ' + result.duration + 's\n🔗 Listen: ' +
-                    result.audio_url;
-                output.className = 'output-box has-content';
-                showToast('✅ Audio generated!', 'success');
-                if (result.audio_url) window.open(result.audio_url, '_blank');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ TTS failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 02 TTS ---------- -->
+    <section class="view" id="view-tts" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 02 · Voice</p>
+        <h1 class="view__title">Text to speech</h1>
+        <p class="view__lede">Turn a script into a finished voice track. Pick a voice, set the pace, render.</p>
+      </div>
+      <div id="ttsPanel"></div>
+    </section>
 
-        async function handleNarration() {
-            const url = document.getElementById('narrationUrl').value;
-            const script = document.getElementById('narrationScript').value;
-            const voice = document.getElementById('narrationVoice').value;
-            const mode = document.getElementById('narrationMode').value;
-            const output = document.getElementById('narrationOutput');
-            if (!url || !script) { showToast('Please provide both video URL and script!', 'error'); return; }
-            output.textContent = '⏳ Generating narrated video... (may take a few minutes)';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/narrate', { url, script, voice, mode });
-                output.textContent = '✅ Narrated video ready!\n\n🎬 Video: ' + result.filename + '\n🔗 Download: ' +
-                    result.download_url;
-                output.className = 'output-box has-content';
-                showToast('✅ Narrated video generated!', 'success');
-                if (result.download_url) window.open(result.download_url, '_blank');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Narration failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 03 Narration ---------- -->
+    <section class="view" id="view-narration" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 03 · Mix</p>
+        <h1 class="view__title">Narration</h1>
+        <p class="view__lede">Lay a voice track over a video. Replace the original audio, blend it, or duck it under the voice.</p>
+      </div>
+      <div id="narrationPanel"></div>
+    </section>
 
-        async function handleSubtitles() {
-            const url = document.getElementById('subtitleUrl').value;
-            const language = document.getElementById('subtitleLanguage').value;
-            const action = document.getElementById('subtitleAction').value;
-            const output = document.getElementById('subtitleOutput');
-            if (!url) { showToast('Please paste a video URL!', 'error'); return; }
-            output.textContent = '⏳ Extracting subtitles...';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/subtitles/extract', { url, language, action });
-                output.textContent = '✅ Subtitles ready!\n\n📄 Format: SRT\n🌐 Language: ' + language +
-                    '\n📝 Lines: ' + result.line_count + '\n🔗 Download: ' + result.download_url;
-                output.className = 'output-box has-content';
-                showToast('✅ Subtitles extracted!', 'success');
-                if (result.download_url) window.open(result.download_url, '_blank');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Subtitle extraction failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 04 Subtitles ---------- -->
+    <section class="view" id="view-subtitles" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 04 · Text</p>
+        <h1 class="view__title">Subtitles</h1>
+        <p class="view__lede">Transcribe speech into timed subtitles, then translate them into any of 70+ languages.</p>
+      </div>
+      <div id="subtitlePanel"></div>
+    </section>
 
-        async function handleStoryline() {
-            const url = document.getElementById('storylineUrl').value;
-            const type = document.getElementById('storylineOutput').value;
-            const output = document.getElementById('storylineOutput');
-            if (!url) { showToast('Please paste a video URL!', 'error'); return; }
-            output.textContent = '⏳ Generating storyline...';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/storyline/generate', { url, type });
-                output.textContent = result.content;
-                output.className = 'output-box has-content';
-                showToast('✅ Storyline generated!', 'success');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Storyline failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 05 Storyline ---------- -->
+    <section class="view" id="view-storyline" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 05 · Edit</p>
+        <h1 class="view__title">Storyline</h1>
+        <p class="view__lede">Pull the transcript out of any source and rewrite it: summary, bullets, clean copy, narration script or chapter markers.</p>
+      </div>
+      <div id="storylinePanel"></div>
+    </section>
 
-        async function handleResearch() {
-            const query = document.getElementById('researchQuery').value;
-            const depth = document.getElementById('researchDepth').value;
-            const output = document.getElementById('researchOutput');
-            if (!query) { showToast('Please enter a research query!', 'error'); return; }
-            output.textContent = '⏳ Researching...';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/research', { query, depth });
-                let text = '🔍 RESEARCH RESULTS\n';
-                text += '='.repeat(40) + '\n\n';
-                text += 'Query: ' + query + '\n';
-                text += 'Depth: ' + depth + '\n';
-                text += 'Sources found: ' + result.sources_found + '\n\n';
-                text += '--- SUMMARY ---\n';
-                text += result.summary + '\n\n';
-                text += '--- SOURCES ---\n';
-                result.sources.forEach((s, i) => {
-                    text += (i + 1) + '. ' + s.title + '\n   ' + s.url + '\n\n';
-                });
-                output.textContent = text;
-                output.className = 'output-box has-content';
-                showToast('✅ Research complete! Found ' + result.sources_found + ' sources.', 'success');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Research failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 06 Rights ---------- -->
+    <section class="view" id="view-rights" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 06 · Clearance</p>
+        <h1 class="view__title">Music rights</h1>
+        <p class="view__lede">Screen an upload for third-party recordings, then clear what you don't hold rights to.</p>
+      </div>
+      <div id="rightsPanel"></div>
+    </section>
 
-        async function handleVideoCreate() {
-            const prompt = document.getElementById('videoPrompt').value;
-            const inputType = document.getElementById('videoInputType').value;
-            const model = document.getElementById('videoModel').value;
-            const length = document.getElementById('videoLength').value;
-            const style = document.getElementById('videoStyle').value;
-            const resolution = document.getElementById('videoResolution').value;
-            const voice = document.getElementById('videoVoice').value;
-            const music = document.getElementById('videoMusic').value;
-            const output = document.getElementById('videoOutput');
-            if (!prompt) { showToast('Please describe what you want to create!', 'error'); return; }
-            output.textContent = '⏳ Generating video... (this takes 1-20 minutes)';
-            output.className = 'output-box';
-            try {
-                const result = await callApi('/api/video/create', {
-                    prompt,
-                    input_type: inputType,
-                    model,
-                    length: parseInt(length),
-                    style,
-                    resolution,
-                    voice,
-                    music
-                });
-                output.textContent = '✅ Video generated successfully!\n\n🎬 Duration: ' + result.duration +
-                    's\n📐 Resolution: ' + resolution + '\n📊 Size: ' + result.size + '\n🔗 Download: ' + result
-                    .download_url;
-                output.className = 'output-box has-content';
-                showToast('✅ AI Video created!', 'success');
-                if (result.download_url) window.open(result.download_url, '_blank');
-            } catch (e) {
-                output.textContent = '❌ Error: ' + e.message;
-                output.className = 'output-box has-content';
-                showToast('❌ Video creation failed: ' + e.message, 'error');
-            }
-        }
+    <!-- ---------- 07 Autopilot ---------- -->
+    <section class="view" id="view-autopilot" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 07 · Orchestration</p>
+        <h1 class="view__title">Autopilot</h1>
+        <p class="view__lede">Describe the outcome. OMNICRAFT breaks it into steps, shows you the cost, and runs them in order.</p>
+      </div>
+      <div id="autopilotPanel"></div>
+    </section>
 
-        function downloadTxt(elementId, filename) {
-            const el = document.getElementById(elementId);
-            const content = el.textContent || 'No content to download.';
-            const blob = new Blob([content], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'omnicraft-' + filename + '-' + Date.now() + '.txt';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('📥 File downloaded!', 'success');
-        }
+    <!-- ---------- 08 Research ---------- -->
+    <section class="view" id="view-research" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 08 · Research</p>
+        <h1 class="view__title">Web research</h1>
+        <p class="view__lede">Search across the open web, read the results, and get a briefing with every claim traced to a source.</p>
+      </div>
+      <div id="researchPanel"></div>
+    </section>
 
-        function handleSubscribe(plan) {
-            if (!backendOnline) {
-                showToast('⚠️ Backend offline. Deploy on Render first.', 'error');
-                return;
-            }
-            showToast('💳 Redirecting to Stripe checkout for ' + plan + ' plan...', 'info');
-        }
+    <!-- ---------- 09 Security ---------- -->
+    <section class="view" id="view-security" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 09 · Account</p>
+        <h1 class="view__title">Security</h1>
+        <p class="view__lede">Two-factor authentication, API keys and session controls.</p>
+      </div>
+      <div id="securityPanel"></div>
+    </section>
 
-        function handleBuyCredits(amount, price) {
-            if (!backendOnline) {
-                showToast('⚠️ Backend offline. Deploy on Render first.', 'error');
-                return;
-            }
-            showToast('💳 Purchasing ' + amount + ' credits for $' + price + '...', 'info');
-        }
+    <!-- ---------- 10 Storage ---------- -->
+    <section class="view" id="view-storage" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 10 · Library</p>
+        <h1 class="view__title">Storage</h1>
+        <p class="view__lede">Everything you upload or render lands here. Share links expire on a schedule you set.</p>
+      </div>
+      <div id="storagePanel"></div>
+    </section>
 
-        // ============================================================
-        // INIT
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 OMNICRAFT loaded successfully!');
-            console.log('📡 API URL:', CONFIG.API_URL);
-            console.log('📱 Click any feature card to open its workspace.');
+    <!-- ---------- 11 Pricing ---------- -->
+    <section class="view" id="view-pricing" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 11 · Billing</p>
+        <h1 class="view__title">Plans and credits</h1>
+        <p class="view__lede">Six tiers. Credits never expire. Cancel from the billing portal whenever you like.</p>
+      </div>
+      <div id="pricingPanel"></div>
+    </section>
 
-            // Close FAQ items by default
-            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
+    <!-- ---------- 12 Video ---------- -->
+    <section class="view" id="view-video" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Channel 12 · Generate</p>
+        <h1 class="view__title">AI video</h1>
+        <p class="view__lede">A brief, a script, or a link goes in. A narrated, captioned, graded video comes out.</p>
+      </div>
+      <div id="videoPanel"></div>
+    </section>
 
-            // Check backend status
-            setTimeout(checkBackendStatus, 1500);
-        });
+    <!-- ---------- Jobs ---------- -->
+    <section class="view" id="view-jobs" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Queue</p>
+        <h1 class="view__title">Jobs</h1>
+        <p class="view__lede">Everything currently rendering, plus the last 40 runs.</p>
+      </div>
+      <div id="jobsPanel"></div>
+    </section>
 
-        // Enter key support
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const active = document.activeElement;
-                if (active && active.id === 'downloadUrl') handleDownload();
-                if (active && active.id === 'ttsText') handleTTS();
-            }
-        });
-    </script>
+    <!-- ---------- Admin ---------- -->
+    <section class="view" id="view-admin" hidden>
+      <div class="view__head">
+        <p class="view__eyebrow">Operator</p>
+        <h1 class="view__title">Admin</h1>
+        <p class="view__lede">Accounts, usage and revenue.</p>
+      </div>
+      <div id="adminPanel"></div>
+    </section>
 
+  </main>
+
+  <div class="deck">
+    <div class="deck__mic"><span class="deck__dot"></span>Talkback</div>
+    <input class="deck__input" id="deckInput"
+           placeholder="Download this clip, pull the subtitles, and summarise it in bullets…"
+           aria-label="Autopilot command">
+    <span class="deck__hint">Enter to run · Shift+Enter for a plan only</span>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/websocket.js"></script>
+<script src="./js/jobs.js"></script>
+<script src="./js/dashboard.js"></script>
+<script src="./js/downloader.js"></script>
+<script src="./js/ai_audio.js"></script>
+<script src="./js/narration.js"></script>
+<script src="./js/subtitles.js"></script>
+<script src="./js/storyline.js"></script>
+<script src="./js/rights.js"></script>
+<script src="./js/autopilot.js"></script>
+<script src="./js/research.js"></script>
+<script src="./js/security.js"></script>
+<script src="./js/storage.js"></script>
+<script src="./js/payments.js"></script>
+<script src="./js/video_create.js"></script>
+<script src="./js/admin.js"></script>
+<script src="./js/landing.js"></script>
+<script src="./js/app.js"></script>
 </body>
 </html>
