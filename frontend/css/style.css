@@ -4,31 +4,43 @@
    ========================================================================== */
 
 :root {
-  --void: #070912;
-  --panel: #0f1425;
-  --panel-2: #151c33;
-  --panel-3: #1b2440;
-  --line: #232c4d;
-  --line-soft: #1a2138;
-  --ink: #e8ecfa;
-  --ink-dim: #b3bcd8;
-  --muted: #838ead;
-  --signal: #6c7bff;
-  --signal-dim: #4b57c4;
-  --live: #ff6a4d;
-  --ok: #46d99a;
-  --warn: #ffc46b;
+  /* Core surfaces */
+  --void: #0a0a0f;
+  --panel: #14141e;
+  --panel-2: #1a1a26;
+  --panel-3: #23233340;
+  --line: rgba(255, 255, 255, 0.10);
+  --line-soft: rgba(255, 255, 255, 0.06);
 
-  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* Type */
+  --ink: #ffffff;
+  --ink-dim: #d4d4e0;
+  --muted: #b0b0c0;
+
+  /* Brand */
+  --accent: #6c3ce0;
+  --accent-2: #e040a0;
+  --signal: #8b5cf6;
+  --signal-dim: #6c3ce0;
+  --live: #e040a0;
+  --ok: #34d399;
+  --warn: #fbbf24;
+
+  --grad: linear-gradient(135deg, #6c3ce0 0%, #e040a0 100%);
+  --grad-2: linear-gradient(135deg, #00d4ff 0%, #7b2ffc 100%);
+  --glass: rgba(255, 255, 255, 0.05);
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   --rail: 232px;
-  --bar: 60px;
+  --bar: 62px;
   --deck: 76px;
-  --r: 10px;
-  --r-sm: 6px;
-  --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
-  --t: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  --r: 16px;
+  --r-sm: 10px;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  --glow: 0 0 40px rgba(108, 60, 224, 0.35);
+  --t: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -981,4 +993,297 @@ audio.player { max-height: 54px; }
 @media (max-width: 620px) {
   .lp-nav__links { display: none; }
   .lp-grid, .lp-steps, .lp-footer__grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   THEME v2 — gradient + glassmorphism restyle
+   Overrides the console styling above. Class names are unchanged so every
+   JS module keeps working; only the appearance differs.
+   ========================================================================== */
+
+/* --- Ambient background ------------------------------------------------ */
+body::before {
+  background:
+    radial-gradient(900px 500px at 80% -10%, rgba(108, 60, 224, 0.28), transparent 60%),
+    radial-gradient(760px 460px at 10% 110%, rgba(224, 64, 160, 0.18), transparent 60%),
+    radial-gradient(600px 400px at 50% 50%, rgba(0, 212, 255, 0.05), transparent 70%);
+}
+
+/* --- Shell: navigation moves to the top -------------------------------- */
+.shell {
+  grid-template-columns: auto 1fr;
+  grid-template-rows: var(--bar) auto 1fr var(--deck);
+  grid-template-areas:
+    "brand topbar"
+    "rail  rail"
+    "stage stage"
+    "deck  deck";
+}
+
+.brand,
+.topbar {
+  background: rgba(20, 20, 30, 0.72);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line-soft);
+  border-right: 0;
+}
+
+.brand__name { letter-spacing: 0.18em; }
+.brand__name em {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Top navigation pills ---------------------------------------------- */
+.rail {
+  grid-area: rail;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 12px 22px;
+  border-right: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(20, 20, 30, 0.6);
+  backdrop-filter: blur(16px);
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail__group { display: none; }
+
+.chan {
+  flex: none;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  border-left: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.chan:hover {
+  background: var(--glass);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.chan[aria-current="true"] {
+  background: var(--grad);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(108, 60, 224, 0.45);
+}
+.chan[aria-current="true"] .chan__no,
+.chan[aria-current="true"] .chan__name { color: #fff; }
+.chan__no { display: none; }
+.chan__led { width: 6px; height: 6px; }
+
+/* --- Glassmorphism cards ------------------------------------------------ */
+.card,
+.stat,
+.job,
+.file,
+.lp-feat,
+.lp-q,
+.gate__panel {
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+.card { padding: 24px; }
+.card:hover { border-color: rgba(255, 255, 255, 0.16); }
+
+/* --- Headings pick up the gradient -------------------------------------- */
+.view__title,
+.lp-hero h1,
+.lp-section__head h2,
+.lp-band h2 {
+  background: linear-gradient(135deg, #ffffff 0%, #d0c4ff 45%, #e040a0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.view__eyebrow { color: #b794ff; }
+
+/* --- Buttons ------------------------------------------------------------ */
+.btn {
+  background: var(--grad);
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(108, 60, 224, 0.35);
+}
+.btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(108, 60, 224, 0.5);
+}
+.btn--ghost,
+.btn--quiet {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  box-shadow: none;
+}
+.btn--ghost:hover:not(:disabled),
+.btn--quiet:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(139, 92, 246, 0.6);
+  color: var(--ink);
+}
+.btn--danger {
+  background: transparent;
+  border: 1px solid rgba(224, 64, 160, 0.5);
+  color: var(--live);
+  box-shadow: none;
+}
+
+/* --- Inputs ------------------------------------------------------------- */
+.input, .select, .textarea, .deck__input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.input:focus, .select:focus, .textarea:focus, .deck__input:focus {
+  border-color: var(--signal);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+/* --- Credit meter ------------------------------------------------------- */
+.meter {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.meter__tick.on { background: var(--signal); }
+.meter__tick.low { background: var(--live); }
+.tier-chip {
+  background: var(--grad);
+  border: 0;
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+/* --- Plans -------------------------------------------------------------- */
+.plan {
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 26px;
+  transition: transform var(--t), border-color var(--t), box-shadow var(--t);
+}
+.plan:hover { transform: translateY(-4px); border-color: rgba(139, 92, 246, 0.5); }
+.plan--featured {
+  border-color: rgba(139, 92, 246, 0.7);
+  box-shadow: var(--glow);
+}
+.plan--featured::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 4px;
+  border-radius: 20px 20px 0 0;
+  background: var(--grad);
+}
+.plan__tag { background: var(--grad); border-radius: 999px; }
+.plan__price {
+  font-size: 40px;
+  font-weight: 750;
+  background: linear-gradient(135deg, #fff, #e0d4ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.plan__list li::before {
+  content: "\2713";
+  background: none;
+  width: auto; height: auto;
+  color: #a78bfa;
+  font-weight: 700;
+  top: 0;
+}
+
+.pack {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 12px 20px;
+}
+.pack:hover { border-color: rgba(139, 92, 246, 0.6); box-shadow: 0 8px 22px rgba(108,60,224,.28); }
+
+/* --- Progress, badges, toasts ------------------------------------------ */
+.bar__fill { background: var(--grad); }
+.badge { border-radius: 999px; }
+.badge--running { border-color: rgba(139,92,246,.5); color: #a78bfa; }
+.toast {
+  background: rgba(20, 20, 30, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+/* --- Landing ------------------------------------------------------------ */
+.lp-nav {
+  background: rgba(10, 10, 15, 0.7);
+  backdrop-filter: blur(18px);
+}
+.lp-nav__brand em {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lp-eyebrow { color: #b794ff; }
+.lp-hero h1 em {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lp-chip { background: var(--glass); border: 1px solid var(--line); }
+.lp-feat:hover { border-color: rgba(139,92,246,.5); box-shadow: 0 12px 32px rgba(108,60,224,.22); }
+.lp-feat__n { color: #b794ff; }
+.lp-step__n { border-color: rgba(139,92,246,.6); color: #a78bfa; }
+.lp-band {
+  border-color: rgba(139, 92, 246, 0.4);
+  background:
+    radial-gradient(700px 320px at 50% 0%, rgba(108,60,224,.25), transparent 70%),
+    var(--glass);
+  border-radius: 24px;
+}
+.toggle { background: rgba(255,255,255,.08); border: 1px solid var(--line); }
+.toggle__knob { background: var(--grad); }
+.save-chip {
+  background: rgba(52, 211, 153, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  border-radius: 999px;
+}
+
+/* --- Talkback deck ------------------------------------------------------ */
+.deck {
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line);
+}
+.deck__dot { background: var(--grad); }
+
+/* --- Responsive --------------------------------------------------------- */
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "rail" "stage" "deck";
+  }
+  .topbar { display: none; }
+  .chan { padding: 8px 15px; font-size: 13px; }
 }
