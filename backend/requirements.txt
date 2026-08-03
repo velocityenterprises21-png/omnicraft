@@ -1,0 +1,44 @@
+# --- Web framework -------------------------------------------------------
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+websockets==14.1
+
+# --- Data ----------------------------------------------------------------
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+aiosqlite==0.20.0
+alembic==1.14.0
+
+# --- Config & validation -------------------------------------------------
+pydantic==2.10.4
+pydantic-settings==2.7.0
+email-validator==2.2.0
+
+# --- Auth & security -----------------------------------------------------
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+slowapi==0.1.9
+
+# --- HTTP ----------------------------------------------------------------
+httpx==0.28.1
+
+# --- Media ---------------------------------------------------------------
+yt-dlp==2024.12.13
+
+# --- Payments ------------------------------------------------------------
+stripe==11.4.1
+
+# --- Object storage ------------------------------------------------------
+boto3==1.35.90
+
+# --- Optional queue (only needed when REDIS_URL is set) ------------------
+celery==5.4.0
+redis==5.2.1
+
+# --- Optional local transcription (no API key needed) --------------------
+# faster-whisper==1.1.0
+
+# --- Optional source separation for the rights module --------------------
+# demucs==4.0.1
