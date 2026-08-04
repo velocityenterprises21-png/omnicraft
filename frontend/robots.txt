@@ -1,8 +1,0 @@
-# OMNICRAFT — replace YOUR-DOMAIN with your deployed origin before launch.
-User-agent: *
-Allow: /
-
-# The app views are behind sign-in; there is nothing crawlable past the gate.
-Disallow: /api/
-
-Sitemap: https://YOUR-DOMAIN/sitemap.xml
