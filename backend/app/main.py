@@ -110,7 +110,9 @@ async def root():
         "version": "1.0.0",
         "docs": "/api/docs" if settings.ENVIRONMENT != "production" else None,
     }
-
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "message": "OMNICRAFT backend is running"}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, token: str = Query(default="")):
