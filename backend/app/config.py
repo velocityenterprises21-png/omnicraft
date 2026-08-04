@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_TTL_DAYS: int = 30
     JWT_ALGORITHM: str = "HS256"
     RATE_LIMIT: str = "100/minute"
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
+    CORS_ORIGINS: str =  "http://localhost:3000,http://localhost:5173,https://omnicraft-three.vercel.app,https://omnicraft-pen44wess-velocity-project.vercel.app,https://omnicraft.vercel.app"
     PUBLIC_BASE_URL: str = "http://localhost:8000"
     FRONTEND_BASE_URL: str = "http://localhost:3000"
 
